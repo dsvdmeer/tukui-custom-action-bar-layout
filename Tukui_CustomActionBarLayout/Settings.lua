@@ -8,9 +8,9 @@
 -- SETUP
 ------------------------------------------------------------------------------------------
 local AddOn = select(2, ...)
+local T, C, L = Tukui:unpack()
 local Constants = AddOn.Constants
 local Strings = AddOn.Strings
-local T, C, L = Tukui:unpack()
 local Settings = {}
 C[Constants.ConfigGroup] = Settings
 
@@ -19,9 +19,9 @@ C[Constants.ConfigGroup] = Settings
 -- SETTINGS
 ------------------------------------------------------------------------------------------
 
-local AddActionBarSettings = function(name, enable, firstButtonCorner, orientation, buttonsPerRow, maxRows)
-	Settings[name..Constants.EnableConfig] = enable
-	Settings[name..Constants.FirstButtonCornerConfig] = {
+local AddActionBarSettings = function(bar, enable, firstButtonCorner, orientation, buttonsPerRow, maxRows)
+	Settings[bar.Name..Constants.EnableConfig] = enable
+	Settings[bar.Name..Constants.FirstButtonCornerConfig] = {
 		["Options"] = {
 			[Strings.TopLeft] = Constants.Corners.TL,
 			[Strings.TopRight] = Constants.Corners.TR,
@@ -30,19 +30,19 @@ local AddActionBarSettings = function(name, enable, firstButtonCorner, orientati
 		},
 		["Value"] = firstButtonCorner,
 	}
-	Settings[name..Constants.OrientationConfig] = {
+	Settings[bar.Name..Constants.OrientationConfig] = {
 		["Options"] = {
 			[Strings.Horizontal] = Constants.Orientations.H,
 			[Strings.Vertical] = Constants.Orientations.V,
 		},
 		["Value"] = orientation,
 	}
-	Settings[name..Constants.ButtonsPerRowConfig] = buttonsPerRow
-	Settings[name..Constants.MaxRowsConfig] = maxRows
+	Settings[bar.Name..Constants.ButtonsPerRowConfig] = buttonsPerRow
+	Settings[bar.Name..Constants.MaxRowsConfig] = maxRows
 end
 
-AddActionBarSettings("ActionBar1", false, Constants.Corners.BL, Constants.Orientations.H, 12, 12)
-AddActionBarSettings("ActionBar2", true, Constants.Corners.BR, Constants.Orientations.V, 3, 12)
-AddActionBarSettings("ActionBar3", true, Constants.Corners.BL, Constants.Orientations.V, 3, 12)
-AddActionBarSettings("ActionBar4", false, Constants.Corners.BL, Constants.Orientations.H, 12, 12)
-AddActionBarSettings("ActionBar5", false, Constants.Corners.TR, Constants.Orientations.V, 12, 12)
+AddActionBarSettings(Constants.Bars.Primary, false, Constants.Corners.BL, Constants.Orientations.H, 12, 12)
+AddActionBarSettings(Constants.Bars.BottomLeft, true, Constants.Corners.BR, Constants.Orientations.V, 3, 12)
+AddActionBarSettings(Constants.Bars.BottomRight, true, Constants.Corners.BL, Constants.Orientations.V, 3, 12)
+AddActionBarSettings(Constants.Bars.Secondary, false, Constants.Corners.BL, Constants.Orientations.H, 12, 12)
+AddActionBarSettings(Constants.Bars.Right, false, Constants.Corners.TR, Constants.Orientations.V, 12, 12)

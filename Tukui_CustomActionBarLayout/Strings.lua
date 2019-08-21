@@ -8,6 +8,7 @@
 -- SETUP
 ------------------------------------------------------------------------------------------
 local AddOn = select(2, ...)
+local T, C, L = Tukui:unpack()
 local Strings = {}
 AddOn.Strings = Strings
 
