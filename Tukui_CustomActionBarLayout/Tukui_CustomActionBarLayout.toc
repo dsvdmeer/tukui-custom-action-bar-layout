@@ -1,0 +1,9 @@
+## Interface: 11302
+## Author: LaPoubelle
+## Version: 0.01
+## Title: Custom Action Bar Layout for |cffff8000Tukui|r
+## RequiredDeps: Tukui
+
+Constants.lua
+Strings.lua
+Settings.lua
