@@ -228,7 +228,7 @@ function AddOn:ResizeBars()
 end
 
 function AddOn:ResizeToggleButton(bar)
-	if type(bar.ToggleButtonName) ~= "string" then
+	if type(bar.ToggleButtonName) ~= "string" or type(bar.ToggleButtonOrientation) ~= "string" then
 		return
 	end
 
