@@ -81,14 +81,14 @@ function AddOn:CalculateBarLayout(bar)
 		return nil
 	end
 
-	local FirstButtonCorner = ValidateEnum(Settings[bar.Name..Constants.FirstButtonCornerConfig], Constants.Corners, Constants.Corners.BL)
-	local Orientation = ValidateEnum(Settings[bar.Name..Constants.OrientationConfig], Constants.Orientations, Constants.Orientations.H)
-	local ButtonsPerRow = ValidateRange(Settings[bar.Name..Constants.ButtonsPerRowConfig], 1, 12, 12)
-	local MaxRows = ValidateRange(Settings[bar.Name..Constants.MaxRowsConfig], 1, 12, 12)
-
 	local Layout = {}
 
 	Layout.ButtonCount = NUM_ACTIONBAR_BUTTONS
+
+	local FirstButtonCorner = ValidateEnum(Settings[bar.Name..Constants.FirstButtonCornerConfig], Constants.Corners, Constants.Corners.BL)
+	local Orientation = ValidateEnum(Settings[bar.Name..Constants.OrientationConfig], Constants.Orientations, Constants.Orientations.H)
+	local ButtonsPerRow = ValidateRange(Settings[bar.Name..Constants.ButtonsPerRowConfig], 1, Layout.ButtonCount, Layout.ButtonCount)
+	local MaxRows = ValidateRange(Settings[bar.Name..Constants.MaxRowsConfig], 1, Layout.ButtonCount, Layout.ButtonCount)
 
 	if Orientation == Constants.Orientations.H then
 		Layout.Width = min(ButtonsPerRow, Layout.ButtonCount)
@@ -138,6 +138,9 @@ function AddOn:CalculateBarLayout(bar)
 		Layout["ButtonLayout"..i] = ButtonLayout
 	end
 
+	Layout.MaxWidth = nil
+	Layout.MaxHeight = nil
+
 	self.Layouts[bar.Name] = Layout
 end
 
@@ -178,21 +181,21 @@ function AddOn:LayoutBars()
 	end
 end
 
-function AddOn:ResizeBar(bar, maxWidth, maxHeight)
+function AddOn:ResizeBar(bar)
 	local Layout = self.Layouts[bar.Name]
 	if type(Layout) ~= "table" then
 		return
 	end
 
 	local Width
-	if type(maxWidth) == "number" then
-		Width = min(Layout.Width, maxWidth)
+	if type(Layout.MaxWidth) == "number" then
+		Width = min(Layout.Width, Layout.MaxWidth)
 	else
 		Width = Layout.Width
 	end
 	local Height
-	if type(maxHeight) == "number" then
-		Height = min(Layout.Height, maxHeight)
+	if type(Layout.MaxHeight) == "number" then
+		Height = min(Layout.Height, Layout.MaxHeight)
 	else
 		Height = Layout.Height
 	end
@@ -249,10 +252,23 @@ function AddOn:ResizeToggleButtons()
 end
 
 function AddOn:HookToggleButtons()
-	HookScript(T.Panels[Constants.Bars.Secondary.ToggleButtonName], "OnClick", nil, function(self)
-		AddOn:ResizeToggleButton(Constants.Bars.BottomLeft)
-		AddOn:ResizeToggleButton(Constants.Bars.BottomRight)
-	end)
+	for i = 1, #Constants.AllBars do
+		if Constants.AllBars[i].ToggleButtonName ~= nil then
+			local ToggleButton = T.Panels[Constants.AllBars[i].ToggleButtonName]
+			HookScript(ToggleButton, "OnClick", nil, function(self)
+				if IsShiftKeyDown() then
+					AddOn:ResizeBar(Constants.AllBars[self.Num])
+				end
+				AddOn:ResizeToggleButtons()
+			end)			
+			HookScript(ToggleButton, "OnEnter", nil, function(self)
+				if GameTooltipTextLeft2 ~= nil and GameTooltipTextLeft2:GetText() == "Shift-click to set the amount of buttons" then
+					GameTooltipTextLeft2:Hide()
+					GameTooltip:Show()
+				end
+			end)			
+		end
+	end
 end
 
 
@@ -267,9 +283,14 @@ end, function()
 	AddOn:HookToggleButtons()
 end)
 
+
+local TopButtonsBars = {Constants.Bars.BottomLeft, Constants.Bars.BottomRight}
+
 Hook(TukuiActionBars, "ShowTopButtons", nil, function()
-	AddOn:ResizeBar(Constants.Bars.BottomLeft)
-	AddOn:ResizeBar(Constants.Bars.BottomRight)
+	for i = 1, #TopButtonsBars do
+		AddOn.Layouts[TopButtonsBars[i].Name].MaxHeight = nil
+		AddOn:ResizeBar(TopButtonsBars[i])
+	end
 end)
 
 Hook(TukuiActionBars, "HideTopButtons", nil, function()
@@ -278,6 +299,9 @@ Hook(TukuiActionBars, "HideTopButtons", nil, function()
 	if type(PrimaryLayout) == "table" then
 		MaxHeight = PrimaryLayout.Height
 	end
-	AddOn:ResizeBar(Constants.Bars.BottomLeft, nil, MaxHeight)
-	AddOn:ResizeBar(Constants.Bars.BottomRight, nil, MaxHeight)	
+
+	for i = 1, #TopButtonsBars do
+		AddOn.Layouts[TopButtonsBars[i].Name].MaxHeight = MaxHeight
+		AddOn:ResizeBar(TopButtonsBars[i])
+	end
 end)
