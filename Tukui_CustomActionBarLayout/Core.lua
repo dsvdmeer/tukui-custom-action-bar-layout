@@ -288,8 +288,11 @@ local TopButtonsBars = {Constants.Bars.BottomLeft, Constants.Bars.BottomRight}
 
 Hook(TukuiActionBars, "ShowTopButtons", nil, function()
 	for i = 1, #TopButtonsBars do
-		AddOn.Layouts[TopButtonsBars[i].Name].MaxHeight = nil
-		AddOn:ResizeBar(TopButtonsBars[i])
+		local Layout = AddOn.Layouts[TopButtonsBars[i].Name]
+		if type(Layout) == "table" then
+			Layout.MaxHeight = nil
+			AddOn:ResizeBar(TopButtonsBars[i])
+		end
 	end
 end)
 
@@ -301,7 +304,10 @@ Hook(TukuiActionBars, "HideTopButtons", nil, function()
 	end
 
 	for i = 1, #TopButtonsBars do
-		AddOn.Layouts[TopButtonsBars[i].Name].MaxHeight = MaxHeight
-		AddOn:ResizeBar(TopButtonsBars[i])
+		local Layout = AddOn.Layouts[TopButtonsBars[i].Name]
+		if type(Layout) == "table" then
+			Layout.MaxHeight = MaxHeight
+			AddOn:ResizeBar(TopButtonsBars[i])
+		end
 	end
 end)
