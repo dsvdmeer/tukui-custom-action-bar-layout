@@ -271,6 +271,34 @@ function AddOn:HookToggleButtons()
 	end
 end
 
+local TopButtonsBars = {Constants.Bars.BottomLeft, Constants.Bars.BottomRight}
+
+function AddOn:ShowTopButtons()
+	for i = 1, #TopButtonsBars do
+		local Layout = self.Layouts[TopButtonsBars[i].Name]
+		if type(Layout) == "table" then
+			Layout.MaxHeight = nil
+			self:ResizeBar(TopButtonsBars[i])
+		end
+	end
+end
+
+function AddOn:HideTopButtons()
+	local MaxHeight = 1
+	local PrimaryLayout = self.Layouts[Constants.Bars.Primary.Name]
+	if type(PrimaryLayout) == "table" then
+		MaxHeight = PrimaryLayout.Height
+	end
+
+	for i = 1, #TopButtonsBars do
+		local Layout = self.Layouts[TopButtonsBars[i].Name]
+		if type(Layout) == "table" then
+			Layout.MaxHeight = MaxHeight
+			self:ResizeBar(TopButtonsBars[i])
+		end
+	end
+end
+
 
 Hook(TukuiActionBars, "Enable", function()
 	-- Pre Enable
@@ -281,33 +309,19 @@ end, function()
 	AddOn:ResizeBars()
 	AddOn:ResizeToggleButtons()
 	AddOn:HookToggleButtons()
+
+	HookScript(T.Panels.ActionBar1, "OnEvent", nil, function(self, event)
+		if event == "PLAYER_ENTERING_WORLD" then
+			AddOn:ResizeBar(Constants.Bars.Primary)
+		end
+	end)
 end)
 
 
-local TopButtonsBars = {Constants.Bars.BottomLeft, Constants.Bars.BottomRight}
-
 Hook(TukuiActionBars, "ShowTopButtons", nil, function()
-	for i = 1, #TopButtonsBars do
-		local Layout = AddOn.Layouts[TopButtonsBars[i].Name]
-		if type(Layout) == "table" then
-			Layout.MaxHeight = nil
-			AddOn:ResizeBar(TopButtonsBars[i])
-		end
-	end
+	AddOn:ShowTopButtons()
 end)
 
 Hook(TukuiActionBars, "HideTopButtons", nil, function()
-	local MaxHeight = 1
-	local PrimaryLayout = AddOn.Layouts[Constants.Bars.Primary.Name]
-	if type(PrimaryLayout) == "table" then
-		MaxHeight = PrimaryLayout.Height
-	end
-
-	for i = 1, #TopButtonsBars do
-		local Layout = AddOn.Layouts[TopButtonsBars[i].Name]
-		if type(Layout) == "table" then
-			Layout.MaxHeight = MaxHeight
-			AddOn:ResizeBar(TopButtonsBars[i])
-		end
-	end
+	AddOn:HideTopButtons()
 end)
