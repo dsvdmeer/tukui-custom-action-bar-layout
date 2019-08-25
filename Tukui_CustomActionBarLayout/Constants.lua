@@ -33,6 +33,11 @@ Constants.Bars = {
 	["Primary"] = {
 		["Name"] = "ActionBar1",
 	},
+	["Secondary"] = {
+		["Name"] = "ActionBar4",
+		["ToggleButtonName"] = "ActionBar4ToggleButton",
+		["ToggleButtonOrientation"] = Constants.Orientations.H,
+	},
 	["BottomLeft"] = {
 		["Name"] = "ActionBar2",
 		["ToggleButtonName"] = "ActionBar2ToggleButton",
@@ -43,11 +48,6 @@ Constants.Bars = {
 		["ToggleButtonName"] = "ActionBar3ToggleButton",
 		["ToggleButtonOrientation"] = Constants.Orientations.V,
 	},
-	["Secondary"] = {
-		["Name"] = "ActionBar4",
-		["ToggleButtonName"] = "ActionBar4ToggleButton",
-		["ToggleButtonOrientation"] = Constants.Orientations.H,
-	},
 	["Right"] = {
 		["Name"] = "ActionBar5",
 		["ToggleButtonName"] = "ActionBar5ToggleButton",
@@ -55,7 +55,7 @@ Constants.Bars = {
 		["ToggleButtonHiddenWidth"] = function() return MultiBarBottomLeftButton1:GetWidth() end,
 	},
 }
-Constants.AllBars = {Constants.Bars.Primary, Constants.Bars.BottomLeft, Constants.Bars.BottomRight, Constants.Bars.Secondary, Constants.Bars.Right}
+Constants.AllBars = {Constants.Bars.Primary, Constants.Bars.Secondary, Constants.Bars.BottomLeft, Constants.Bars.BottomRight, Constants.Bars.Right}
 
 Constants.ConfigGroup = "CustomActionBarLayout"
 Constants.EnableConfig = "Enable"

@@ -277,7 +277,11 @@ function AddOn:HookToggleButtons()
 			local ToggleButton = T.Panels[Bar.ToggleButtonName]
 			HookScript(ToggleButton, "OnClick", nil, function(self)
 				if IsShiftKeyDown() then
-					AddOn:ResizeBar(Constants.AllBars[self.Num])
+					for i = 1, #Constants.AllBars do
+						if T.Panels[Constants.AllBars[i].Name] == self.Bar then
+							AddOn:ResizeBar(Constants.AllBars[i])
+						end
+					end
 				end
 				AddOn:ResizeToggleButtons()
 			end)
