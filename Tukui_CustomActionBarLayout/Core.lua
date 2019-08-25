@@ -171,6 +171,7 @@ function AddOn:LayoutBar(bar)
 
 		Button:ClearAllPoints()
 		Button:SetPoint("BOTTOMLEFT", Bar, ((ButtonLayout.X - 1) * Size) + (ButtonLayout.X * Spacing), ((ButtonLayout.Y - 1) * Size) + (ButtonLayout.Y * Spacing))
+		print("Button"..i.." at "..ButtonLayout.X..", "..ButtonLayout.Y)
 	end
 end
 
@@ -325,6 +326,42 @@ function AddOn:HideTopButtons()
 	end
 end
 
+function AddOn:FixSecondaryActionBar()
+	local PrimaryLayout = self.Layouts[Constants.Bars.Primary.Name]
+	local SecondaryLayout = self.Layouts[Constants.Bars.Secondary.Name]
+
+	local PrimaryBar = T.Panels[Constants.Bars.Primary.Name]
+	local PrimaryButtonSize = PrimaryBar["Button1"]:GetWidth()
+	local SecondaryBar = T.Panels[Constants.Bars.Secondary.Name]
+	local SecondaryButtonSize = PrimaryBar["Button1"]:GetWidth()
+	local Spacing = C.ActionBars.ButtonSpacing
+
+	if PrimaryLayout == nil then
+		if SecondaryLayout == nil then
+			return
+		end
+		PrimaryLayout = {
+			["Width"] = Constants.Bars.Primary.ButtonCount,
+			["Height"] = 1,
+		}
+	end
+
+	if SecondaryLayout == nil then
+		SecondaryLayout = {
+			["Width"] = Constants.Bars.Secondary.ButtonCount,
+			["Height"] = 1,
+		}
+		SecondaryBar:SetWidth((SecondaryLayout.Width * SecondaryButtonSize) + ((SecondaryLayout.Width + 1) * Spacing))
+		SecondaryBar:SetHeight((SecondaryLayout.Height * SecondaryButtonSize) + ((SecondaryLayout.Height + 1) * Spacing))
+	end
+
+	SecondaryBar:ClearAllPoints()
+	SecondaryBar:SetPoint("BOTTOM", PrimaryBar, "TOP", 0, -Spacing)
+	SecondaryBar.Backdrop:ClearAllPoints()
+	SecondaryBar.Backdrop:SetPoint("TOPLEFT")
+	SecondaryBar.Backdrop:SetPoint("BOTTOMRIGHT", 0, -PrimaryLayout.Height * (PrimaryButtonSize + Spacing))
+end
+
 
 Hook(TukuiActionBars, "Enable", function()
 	-- Pre Enable
@@ -338,7 +375,9 @@ end, function()
 
 	HookScript(T.Panels.ActionBar1, "OnEvent", nil, function(self, event)
 		if event == "PLAYER_ENTERING_WORLD" then
+			AddOn:LayoutBar(Constants.Bars.Primary)
 			AddOn:ResizeBar(Constants.Bars.Primary)
+			AddOn:FixSecondaryActionBar()
 		end
 	end)
 end)
