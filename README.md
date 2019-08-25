@@ -16,13 +16,15 @@ For each of the 5 action bars you can specify in which corner the first button o
 ###### Example
 
 <img src="Example.jpg" width="100%">
-*Example of a 3x4 layout*
+
+_Example of a 3x4 layout_
 
 
 ###### Configuration
 
 <img src="Config.jpg" width="100%">
-*Configuration options*
+
+_Configuration options_
 
 
 ## Credits
