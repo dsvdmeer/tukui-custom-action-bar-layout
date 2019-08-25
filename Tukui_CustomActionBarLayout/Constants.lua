@@ -52,6 +52,7 @@ Constants.Bars = {
 		["Name"] = "ActionBar5",
 		["ToggleButtonName"] = "ActionBar5ToggleButton",
 		["ToggleButtonOrientation"] = Constants.Orientations.H,
+		["ToggleButtonHiddenWidth"] = function() return MultiBarBottomLeftButton1:GetWidth() end,
 	},
 }
 Constants.AllBars = {Constants.Bars.Primary, Constants.Bars.BottomLeft, Constants.Bars.BottomRight, Constants.Bars.Secondary, Constants.Bars.Right}

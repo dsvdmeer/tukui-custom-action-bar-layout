@@ -76,8 +76,7 @@ local HookScript = function(f, eventName, pre, post)
 end
 
 function AddOn:CalculateBarLayout(bar)
-	local Enable = Settings[bar.Name..Constants.EnableConfig]
-	if not Enable then
+	if not Settings[bar.Name..Constants.EnableConfig] then
 		return nil
 	end
 
@@ -231,6 +230,10 @@ function AddOn:ResizeBars()
 end
 
 function AddOn:ResizeToggleButton(bar)
+	if not Settings[bar.Name..Constants.EnableConfig] then
+		return nil
+	end
+
 	if type(bar.ToggleButtonName) ~= "string" or type(bar.ToggleButtonOrientation) ~= "string" then
 		return
 	end
@@ -239,9 +242,25 @@ function AddOn:ResizeToggleButton(bar)
 	local ToggleButton = T.Panels[bar.ToggleButtonName]
 
 	if bar.ToggleButtonOrientation == Constants.Orientations.H then
-		ToggleButton:SetWidth(Bar:GetWidth())
+		local Width = Bar:GetWidth()
+		if not Bar:IsVisible() then
+			if type(bar.ToggleButtonHiddenWidth) == "number" then
+				Width = bar.ToggleButtonHiddenWidth
+			elseif type(bar.ToggleButtonHiddenWidth) == "function" then
+				Width = bar.ToggleButtonHiddenWidth()
+			end
+		end
+		ToggleButton:SetWidth(Width)
 	else
-		ToggleButton:SetHeight(Bar:GetHeight())
+		local Height = Bar:GetHeight()
+		if not Bar:IsVisible() then
+			if type(bar.ToggleButtonHiddenHeight) == "number" then
+				Height = bar.ToggleButtonHiddenHeight
+			elseif type(bar.ToggleButtonHiddenHeight) == "function" then
+				Height = bar.ToggleButtonHiddenHeight()
+			end
+		end
+		ToggleButton:SetHeight(Height)
 	end
 end
 
@@ -253,20 +272,23 @@ end
 
 function AddOn:HookToggleButtons()
 	for i = 1, #Constants.AllBars do
-		if Constants.AllBars[i].ToggleButtonName ~= nil then
-			local ToggleButton = T.Panels[Constants.AllBars[i].ToggleButtonName]
+		local Bar = Constants.AllBars[i]
+		if Bar.ToggleButtonName ~= nil then
+			local ToggleButton = T.Panels[Bar.ToggleButtonName]
 			HookScript(ToggleButton, "OnClick", nil, function(self)
 				if IsShiftKeyDown() then
 					AddOn:ResizeBar(Constants.AllBars[self.Num])
 				end
 				AddOn:ResizeToggleButtons()
-			end)			
-			HookScript(ToggleButton, "OnEnter", nil, function(self)
-				if GameTooltipTextLeft2 ~= nil and GameTooltipTextLeft2:GetText() == "Shift-click to set the amount of buttons" then
-					GameTooltipTextLeft2:Hide()
-					GameTooltip:Show()
-				end
-			end)			
+			end)
+			if Settings[Bar.Name..Constants.EnableConfig] then
+				HookScript(ToggleButton, "OnEnter", nil, function(self)
+					if GameTooltipTextLeft2 ~= nil and GameTooltipTextLeft2:GetText() == "Shift-click to set the amount of buttons" then
+						GameTooltipTextLeft2:Hide()
+						GameTooltip:Show()
+					end
+				end)
+			end
 		end
 	end
 end
