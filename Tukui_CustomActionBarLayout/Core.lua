@@ -171,7 +171,6 @@ function AddOn:LayoutBar(bar)
 
 		Button:ClearAllPoints()
 		Button:SetPoint("BOTTOMLEFT", Bar, ((ButtonLayout.X - 1) * Size) + (ButtonLayout.X * Spacing), ((ButtonLayout.Y - 1) * Size) + (ButtonLayout.Y * Spacing))
-		print("Button"..i.." at "..ButtonLayout.X..", "..ButtonLayout.Y)
 	end
 end
 
