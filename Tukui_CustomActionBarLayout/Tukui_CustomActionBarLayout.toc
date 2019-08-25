@@ -7,4 +7,5 @@
 Constants.lua
 Strings.lua
 Settings.lua
+Config.lua
 Core.lua

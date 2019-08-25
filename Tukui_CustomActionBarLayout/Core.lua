@@ -82,7 +82,7 @@ function AddOn:CalculateBarLayout(bar)
 
 	local Layout = {}
 
-	Layout.ButtonCount = NUM_ACTIONBAR_BUTTONS
+	Layout.ButtonCount = bar.ButtonCount
 
 	local FirstButtonCorner = ValidateEnum(Settings[bar.Name..Constants.FirstButtonCornerConfig], Constants.Corners, Constants.Corners.BL)
 	local Orientation = ValidateEnum(Settings[bar.Name..Constants.OrientationConfig], Constants.Orientations, Constants.Orientations.H)
